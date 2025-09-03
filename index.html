@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrasilCash - Fluxo de Caixa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --azul-brasil: #002776;
+            --verde-brasil: #009c3b;
+            --amarelo-brasil: #ffdf00;
+            --branco: #ffffff;
+            --vermelho: #ff3333;
+            --preto: #0d0d0d;
+            --cinza-claro: #f5f5f5;
+            --cinza-escuro: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--cinza-claro);
+            color: var(--preto);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--azul-brasil) 0%, var(--verde-brasil) 100%);
+            color: var(--branco);
+            padding: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            color: var(--amarelo-brasil);
+            font-size: 2rem;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--branco);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--amarelo-brasil);
+            color: var(--preto);
+        }
+
+        .btn-primary:hover {
+            background-color: #e6c700;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--branco);
+            color: var(--branco);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--branco);
+            color: var(--azul-brasil);
+        }
+
+        .btn-success {
+            background-color: var(--verde-brasil);
+            color: var(--branco);
+        }
+
+        .btn-danger {
+            background-color: var(--vermelho);
+            color: var(--branco);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        main {
+            padding: 40px 0;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
+        }
+
+        .card {
+            background-color: var(--branco);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            border-bottom: 1px solid var(--cinza-claro);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--azul-brasil);
+        }
+
+        .saldo {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .saldo-valor {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .positivo {
+            color: var(--verde-brasil);
+        }
+
+        .negativo {
+            color: var(--vermelho);
+        }
+
+        .filtros {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--azul-brasil);
+            color: var(--branco);
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .entrada {
+            color: var(--verde-brasil);
+            font-weight: 600;
+        }
+
+        .saida {
+            color: var(--vermelho);
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--branco);
+            border-radius: 8px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--azul-brasil);
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--cinza-escuro);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--amarelo-brasil);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        footer {
+            background-color: var(--azul-brasil);
+            color: var(--branco);
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--branco);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .filtros {
+                flex-direction: column;
+            }
+
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-coins"></i>
+                    <h1>BrasilCash</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#transacoes">Transações</a></li>
+                        <li><a href="#relatorios">Relatórios</a></li>
+                        <li><a href="#sobre">Sobre</a></li>
+                    </ul>
+                </nav>
+                <div class="auth-buttons">
+                    <button class="btn btn-outline" id="loginBtn">Entrar</button>
+                    <button class="btn btn-primary" id="registerBtn">Registrar</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="dashboard">
+            <div class="dashboard">
+                <div class="sidebar">
+                    <div class="card">
+                        <div class="saldo">
+                            <h3>Saldo Atual</h3>
+                            <div class="saldo-valor positivo">R$ 5.250,00</div>
+                            <p>Atualizado em: 10/06/2023</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Resumo</h3>
+                        </div>
+                        <div class="resumo">
+                            <p>Entradas: <span class="entrada">R$ 7.500,00</span></p>
+                            <p>Saídas: <span class="saida">R$ 2.250,00</span></p>
+                            <p>Transações: 15</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Exportar</h3>
+                        </div>
+                        <div class="exportar">
+                            <button class="btn btn-success" style="width: 100%;">
+                                <i class="fas fa-file-export"></i> Exportar CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="main-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Transações Recentes</h3>
+                            <button class="btn btn-primary" id="novaTransacaoBtn">
+                                <i class="fas fa-plus"></i> Nova Transação
+                            </button>
+                        </div>
+                        
+                        <div class="filtros">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="dataInicio">Data Início</label>
+                                <input type="date" id="dataInicio">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="dataFim">Data Fim</label>
+                                <input type="date" id="dataFim">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="tipo">Tipo</label>
+                                <select id="tipo">
+                                    <option value="">Todos</option>
+                                    <option value="entrada">Entrada</option>
+                                    <option value="saida">Saída</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="align-self: flex-end;">
+                                <button class="btn btn-primary">Filtrar</button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Descrição</th>
+                                        <th>Categoria</th>
+                                        <th>Valor</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>10/06/2023</td>
+                                        <td>Salário</td>
+                                        <td>Renda</td>
+                                        <td class="entrada">R$ 3.500,00</td>
+                                        <td class="actions">
+                                            <button class="btn btn-small btn-primary"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>08/06/2023</td>
+                                        <td>Aluguel</td>
+                                        <td>Moradia</td>
+                                        <td class="saida">R$ 1.200,00</td>
+                                        <td class="actions">
+                                            <button class="btn btn-small btn-primary"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>05/06/2023</td>
+                                        <td>Freelance</td>
+                                        <td>Renda Extra</td>
+                                        <td class="entrada">R$ 1.200,00</td>
+                                        <td class="actions">
+                                            <button class="btn btn-small btn-primary"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>03/06/2023</td>
+                                        <td>Supermercado</td>
+                                        <td>Alimentação</td>
+                                        <td class="saida">R$ 450,00</td>
+                                        <td class="actions">
+                                            <button class="btn btn-small btn-primary"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>01/06/2023</td>
+                                        <td>Internet</td>
+                                        <td>Serviços</td>
+                                        <td class="saida">R$ 120,00</td>
+                                        <td class="actions">
+                                            <button class="btn btn-small btn-primary"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-small btn-danger"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Login/Registro -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Entrar no BrasilCash</h2>
+                <span class="close">&times;</span>
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="login">Login</div>
+                <div class="tab" data-tab="register">Registrar</div>
+            </div>
+            
+            <div class="tab-content active" id="loginTab">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Entrar</button>
+                </form>
+            </div>
+            
+            <div class="tab-content" id="registerTab">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">E-mail</label>
+                        <input type="email" id="regEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regSenha">Senha</label>
+                        <input type="password" id="regSenha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confSenha">Confirmar Senha</label>
+                        <input type="password" id="confSenha" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Criar Conta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Transação -->
+    <div class="modal" id="transacaoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Nova Transação</h2>
+                <span class="close">&times;</span>
+            </div>
+            
+            <form id="transacaoForm">
+                <div class="form-group">
+                    <label for="tipoTransacao">Tipo</label>
+                    <select id="tipoTransacao" required>
+                        <option value="entrada">Entrada</option>
+                        <option value="saida">Saída</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dataTransacao">Data</label>
+                    <input type="date" id="dataTransacao" required>
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição</label>
+                    <input type="text" id="descricao" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria" required>
+                        <option value="salario">Salário</option>
+                        <option value="freelance">Freelance</option>
+                        <option value="aluguel">Aluguel</option>
+                        <option value="alimentacao">Alimentação</option>
+                        <option value="transporte">Transporte</option>
+                        <option value="servicos">Serviços</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="valor">Valor (R$)</label>
+                    <input type="number" id="valor" step="0.01" min="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Salvar Transação</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">BrasilCash</div>
+                <p>Controle seu fluxo de caixa com as cores do Brasil</p>
+                <div class="footer-links">
+                    <a href="#">Termos de Uso</a>
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Contato</a>
+                </div>
+                <p>&copy; 2023 BrasilCash - Todos os direitos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Modais
+        const authModal = document.getElementById('authModal');
+        const transacaoModal = document.getElementById('transacaoModal');
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const novaTransacaoBtn = document.getElementById('novaTransacaoBtn');
+        const closeButtons = document.querySelectorAll('.close');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Abrir modal de autenticação
+        loginBtn.addEventListener('click', () => {
+            authModal.style.display = 'flex';
+            document.getElementById('modalTitle').textContent = 'Entrar no BrasilCash';
+            switchTab('login');
+        });
+
+        registerBtn.addEventListener('click', () => {
+            authModal.style.display = 'flex';
+            document.getElementById('modalTitle').textContent = 'Criar Conta no BrasilCash';
+            switchTab('register');
+        });
+
+        // Abrir modal de transação
+        novaTransacaoBtn.addEventListener('click', () => {
+            transacaoModal.style.display = 'flex';
+        });
+
+        // Fechar modais
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                authModal.style.display = 'none';
+                transacaoModal.style.display = 'none';
+            });
+        });
+
+        // Fechar modal clicando fora dele
+        window.addEventListener('click', (event) => {
+            if (event.target === authModal) {
+                authModal.style.display = 'none';
+            }
+            if (event.target === transacaoModal) {
+                transacaoModal.style.display = 'none';
+            }
+        });
+
+        // Sistema de abas
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                switchTab(tabId);
+            });
+        });
+
+        function switchTab(tabId) {
+            tabs.forEach(tab => {
+                if (tab.getAttribute('data-tab') === tabId) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+
+            tabContents.forEach(content => {
+                if (content.id === `${tabId}Tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+
+        // Formulários
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Login realizado com sucesso!');
+            authModal.style.display = 'none';
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Conta criada com sucesso!');
+            authModal.style.display = 'none';
+        });
+
+        document.getElementById('transacaoForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Transação adicionada com sucesso!');
+            transacaoModal.style.display = 'none';
+        });
+
+        // Dados iniciais para demonstração
+        document.getElementById('dataInicio').valueAsDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        document.getElementById('dataFim').valueAsDate = new Date();
+        document.getElementById('dataTransacao').valueAsDate = new Date();
+    </script>
+</body>
+</html>
